@@ -208,9 +208,9 @@ function chain(c){
  n.up=p=>{const t=c.currentTime,s=(a,v)=>off?a.value=v:a.setTargetAtTime(v,t,.02);
   s(n.in.gain,p.g);s(n.hp.frequency,p.hp);s(n.lo.gain,p.lo);s(n.mi.gain,p.mi);s(n.hi.gain,p.hi);n.sh.curve=p.wm?curve(p.wm):null;
   n.cp.threshold.value=-8-p.cp*42;n.cp.ratio.value=2+p.cp*10;s(n.rv.gain,p.rv);s(n.dl.delayTime,p.et);s(n.ec.gain,p.ec);s(n.chg.gain,p.ch*.7);s(n.lg.gain,.002+p.ch*.004);s(n.ms.gain,p.ms);
-  if(n.rs!==p.rs){n.rs=p.rs;n.cv.buffer=mkIR(c,p.rs)}};
+  const re=off?p.rs:Math.min(p.rs,2.5);if(n.rs!==re){n.rs=re;n.cv.buffer=mkIR(c,re)}};
  return n}
-function ensureCtx(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:0});L=chain(ctx);L.sh.oversample='none';L.dir=ctx.createGain();L.dir.gain.value=0;L.dir.connect(ctx.destination);L.mon=ctx.createGain();L.mon.gain.value=0;L.rd=ctx.createMediaStreamDestination();L.an=ctx.createAnalyser();L.an.fftSize=256;L.an.smoothingTimeConstant=.8;
+function ensureCtx(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});L=chain(ctx);L.sh.oversample='none';L.dir=ctx.createGain();L.dir.gain.value=0;L.dir.connect(ctx.destination);L.mon=ctx.createGain();L.mon.gain.value=0;L.rd=ctx.createMediaStreamDestination();L.an=ctx.createAnalyser();L.an.fftSize=256;L.an.smoothingTimeConstant=.8;
  L.out.connect(L.an);L.out.connect(L.rd);L.out.connect(L.mon);L.mon.connect(ctx.destination);upd();viz()}
 function viz(){const cv=$('viz'),g=cv.getContext('2d'),a=new Uint8Array(L.an.frequencyBinCount);(function f(){requestAnimationFrame(f);if(!cv.clientWidth)return;const d=devicePixelRatio||1,w=Math.round(cv.clientWidth*d);if(cv.width!==w){cv.width=w;cv.height=Math.round(cv.clientHeight*d)}
  L.an.getByteFrequencyData(a);g.clearRect(0,0,cv.width,cv.height);const n=44,bw=cv.width/n;g.fillStyle='#d4af6a';for(let i=0;i<n;i++){const v=a[Math.floor(i*a.length*.7/n)]/255,h=Math.max(4*d,v*cv.height);g.globalAlpha=.35+v*.65;g.fillRect(i*bw+2,(cv.height-h)/2,bw-4,h)}g.globalAlpha=1})()}
