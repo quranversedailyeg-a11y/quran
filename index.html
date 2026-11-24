@@ -183,7 +183,8 @@ const prm=()=>{const o={};S.forEach(s=>o[s[0]]=parseFloat($(s[0]).value));return
 const label=()=>S.forEach(s=>$('v_'+s[0]).textContent=$(s[0]).value+(s[6]?' '+s[6]:''));
 const upd=()=>{label();if(L)L.up(prm())};
 function setP(o){const p=Object.assign({},D,o);for(const k in p)$(k).value=p[k];upd()}
-let rt;S.forEach(s=>$(s[0]).oninput=()=>{label();document.querySelectorAll('#pre .btn').forEach(b=>b.classList.remove('sel'));if(s[0]=='rs'){clearTimeout(rt);rt=setTimeout(upd,250)}else upd()});
+let rt;S.forEach(s=>$(s[0]).oninput=()=>{label();document.querySelectorAll('#pre .btn').forEach(b=>b.classList.remove('sel'));if(s[0]=='rs')label();else upd()});
+S.forEach(s=>$(s[0]).onchange=()=>{if(s[0]=='rs')upd()});
 $('pre').onclick=e=>{const k=e.target.dataset.p;if(!k)return;setP(PR[k]);document.querySelectorAll('#pre .btn').forEach(b=>b.classList.toggle('sel',b===e.target))};
 label();
 
@@ -206,8 +207,8 @@ function chain(c){
  n.lf.connect(n.lg).connect(n.cd.delayTime);n.lf.start();n.cp.connect(n.cd).connect(n.chg).connect(n.ms);n.ms.connect(n.lim);
  n.out=n.lim;n.sh=n.sh;
  n.up=p=>{const t=c.currentTime,s=(a,v)=>off?a.value=v:a.setTargetAtTime(v,t,.02);
-  s(n.in.gain,p.g);s(n.hp.frequency,p.hp);s(n.lo.gain,p.lo);s(n.mi.gain,p.mi);s(n.hi.gain,p.hi);n.sh.curve=p.wm?curve(p.wm):null;
-  n.cp.threshold.value=-8-p.cp*42;n.cp.ratio.value=2+p.cp*10;s(n.rv.gain,p.rv);s(n.dl.delayTime,p.et);s(n.ec.gain,p.ec);s(n.chg.gain,p.ch*.7);s(n.lg.gain,.002+p.ch*.004);s(n.ms.gain,p.ms);
+  s(n.in.gain,p.g);s(n.hp.frequency,p.hp);s(n.lo.gain,p.lo);s(n.mi.gain,p.mi);s(n.hi.gain,p.hi);if(n.wmv!==p.wm){n.wmv=p.wm;n.sh.curve=p.wm?curve(p.wm):null}
+  s(n.cp.threshold,-8-p.cp*42);s(n.cp.ratio,2+p.cp*10);s(n.rv.gain,p.rv);s(n.dl.delayTime,p.et);s(n.ec.gain,p.ec);s(n.chg.gain,p.ch*.7);s(n.lg.gain,.002+p.ch*.004);s(n.ms.gain,p.ms);
   const re=off?p.rs:Math.min(p.rs,2.5);if(n.rs!==re){n.rs=re;n.cv.buffer=mkIR(c,re)}};
  return n}
 function ensureCtx(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});L=chain(ctx);L.sh.oversample='none';L.dir=ctx.createGain();L.dir.gain.value=0;L.dir.connect(ctx.destination);L.mon=ctx.createGain();L.mon.gain.value=0;L.rd=ctx.createMediaStreamDestination();L.an=ctx.createAnalyser();L.an.fftSize=256;L.an.smoothingTimeConstant=.8;
@@ -316,7 +317,7 @@ const sheet=o=>{document.body.classList.toggle('fxo',o);if(o){ensureCtx();upd()}
 ['fx1','fx2'].forEach(k=>$(k).onclick=()=>sheet(true));$('shade').onclick=$('fxd').onclick=()=>sheet(false);
 
 /* ---------- start ---------- */
-$('go').onclick=async()=>{await dbOpen();await renderLib();$('splash').classList.add('hide');setTimeout(()=>$('splash').style.display='none',700)};
+$('go').onclick=()=>{$('splash').classList.add('hide');setTimeout(()=>$('splash').style.display='none',700);Promise.race([dbOpen(),new Promise(r=>setTimeout(r,2000))]).then(renderLib).catch(()=>{})};
 </script>
 </body>
 </html>
