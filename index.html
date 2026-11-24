@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#07090d">
+<title>Quran Studio Pro</title>
+<style>
+:root{--bg:#07090d;--bg2:#0e1219;--card:#131925;--line:#232c3d;--gold:#d4af6a;--gold2:#f3dca0;--tx:#eef1f6;--mut:#8a94a8;--red:#e5484d;--grn:#3ecf8e;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,"Segoe UI","Noto Naskh Arabic",Tahoma,sans-serif;overscroll-behavior:none}
+button,select,label{font-family:inherit}
+.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.i.f{fill:currentColor;stroke:none}
+#splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(800px 500px at 50% 30%,#1c2540,#05070b);transition:opacity .6s}
+#splash.hide{opacity:0;pointer-events:none}
+.logo{width:96px;height:96px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;margin-bottom:18px;color:var(--gold2);box-shadow:0 0 50px #d4af6a40}
+.logo .i{width:44px;height:44px}
+.bism{font-family:Amiri,"Noto Naskh Arabic",serif;font-size:clamp(26px,8vw,44px);color:var(--gold2);margin:0}
+h1{margin:8px 0;font-size:clamp(22px,7vw,34px);letter-spacing:3px;font-weight:300;direction:ltr;color:var(--gold2)}
+.go{background:linear-gradient(135deg,var(--gold),#a8823f);color:#1a1408;border:0;font-size:18px;font-weight:700;padding:15px 48px;border-radius:40px;margin-top:18px}
+.eng{direction:ltr;margin-top:26px;font-size:13px;line-height:1.7;color:var(--mut)}.eng b{color:var(--gold2);font-size:15px}
+#app{height:100dvh;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0)}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line);background:#0b0f16}
+header .t{direction:ltr;font-weight:600;letter-spacing:2px;color:var(--gold2);font-size:15px}
+.live{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--line);color:var(--mut)}.live.on{color:var(--red);border-color:var(--red);animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.4}}
+main{flex:1;overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch}
+.tab{max-width:640px;margin:0 auto;display:grid;gap:14px}
+.card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);border-radius:18px;padding:14px}
+.card h3{margin:0 0 10px;font-size:13px;color:var(--gold);font-weight:600}
+canvas{width:100%;display:block;border-radius:12px;background:#05070b;touch-action:none}
+#viz{height:110px}#wv{height:150px}
+.timer{font-family:ui-monospace,Menlo,monospace;font-size:40px;text-align:center;direction:ltr;margin:10px 0 4px;color:var(--gold2)}
+.recrow{display:flex;align-items:center;justify-content:center;gap:22px;margin:8px 0 4px}
+.rb{width:84px;height:84px;border-radius:50%;border:4px solid #fff3;background:var(--red);color:#fff;display:grid;place-items:center;box-shadow:0 8px 30px #e5484d55}
+.rb .i{width:34px;height:34px}.rb.stop{background:#fff;color:#111}
+.ib{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:#1b2333;color:var(--tx);display:grid;place-items:center}
+.ib.on{background:#3ecf8e22;border-color:var(--grn);color:var(--grn)}.ib.red{color:var(--red)}.ib.sm{width:44px;height:44px}
+.btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;background:#1b2333;color:var(--tx);border:1px solid var(--line);padding:0 16px;height:50px;border-radius:14px;font-size:15px;text-decoration:none}
+.btn.gold{background:linear-gradient(135deg,var(--gold),#a8823f);color:#1a1408;border:0;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{color:var(--mut);font-size:12.5px;text-align:center;margin:6px 0 0;line-height:1.7}
+#merr{border:1px solid var(--red);background:#e5484d14;border-radius:14px;padding:12px;font-size:13.5px;line-height:1.8;white-space:pre-line}#merr .btn{margin-top:8px;height:44px;width:100%}
+.row{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;background:#0a0e15}
+.row .rm{flex:1;min-width:0}.row b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row small{color:var(--mut);font-size:11.5px}
+.ri{width:40px;height:40px;border-radius:12px;background:#d4af6a18;color:var(--gold);display:grid;place-items:center}
+.empty{color:var(--mut);text-align:center;padding:16px;font-size:14px}
+.tm{display:flex;justify-content:space-between;direction:ltr;font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--gold2);margin:8px 2px}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tool{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 2px;border-radius:14px;border:1px solid var(--line);background:#1b2333;color:var(--tx);font-size:11.5px}
+.tool.hi{border-color:var(--gold);color:var(--gold2);background:#d4af6a18}.tool.on{border-color:var(--grn);color:var(--grn)}
+.pp{width:64px;height:64px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--gold),#a8823f);color:#1a1408;display:grid;place-items:center}
+nav{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);background:#0b0f16;padding-bottom:env(safe-area-inset-bottom,0)}
+nav button{background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11.5px}nav button.on{color:var(--gold2)}
+#shade{position:fixed;inset:0;background:#0009;z-index:20;opacity:0;pointer-events:none;transition:opacity .25s}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:78dvh;overflow-y:auto;background:var(--card);border-radius:22px 22px 0 0;border-top:1px solid var(--gold);padding:14px 16px calc(20px + env(safe-area-inset-bottom,0));transform:translateY(105%);transition:transform .3s}
+body.fxo #sheet{transform:none}body.fxo #shade{opacity:1;pointer-events:auto}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.pre{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}.pre .btn{height:38px;white-space:nowrap;font-size:13.5px;padding:0 14px}.pre .btn.sel{border-color:var(--gold);color:var(--gold2);background:#d4af6a18}
+.sl{margin-bottom:6px}.sl label{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}.sl b{color:var(--gold2);font-weight:500;direction:ltr}
+input[type=range]{width:100%;height:34px;accent-color:var(--gold)}
+.chk{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--mut);margin:6px 0}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#000d;border:1px solid var(--gold);color:var(--gold2);padding:10px 18px;border-radius:24px;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90%;text-align:center}#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></symbol>
+<symbol id="i-lib" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 4v16M15 8v8M19 10v4"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 4h3.5v16H7zM13.5 4H17v16h-3.5z"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+<symbol id="i-cut" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-magic" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></symbol>
+<symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/></symbol>
+<symbol id="i-fx" viewBox="0 0 24 24"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+<symbol id="i-hp" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="7" rx="2"/><rect x="17" y="14" width="4" height="7" rx="2"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"/></symbol>
+<symbol id="i-all" viewBox="0 0 24 24"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M9 12h6"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6"/></symbol>
+</defs></svg>
+
+<div id="splash">
+  <div class="logo"><svg class="i"><use href="#i-mic"/></svg></div>
+  <p class="bism">بسم الله الرحمن الرحيم</p>
+  <h1>QURAN STUDIO PRO</h1>
+  <button class="go" id="go">ابدأ الآن</button>
+  <div class="eng"><b>Eng. Mohamed Abdellatif El-Sayed</b><br>Electrical Engineering · Al-Azhar University</div>
+</div>
+
+<div id="app">
+<header><div class="t">QURAN STUDIO PRO</div><div class="live" id="live">جاهز</div></header>
+<main>
+<section class="tab" id="t-rec">
+  <div class="card">
+    <canvas id="viz"></canvas>
+    <div class="timer" id="tm">00:00.0</div>
+    <div class="recrow">
+      <button class="ib" id="mon" aria-label="مراقبة"><svg class="i"><use href="#i-hp"/></svg></button>
+      <button class="rb" id="rb" aria-label="تسجيل"><svg class="i f"><use href="#i-mic"/></svg></button>
+      <button class="ib" id="pz" aria-label="إيقاف مؤقت"><svg class="i f"><use href="#i-pause"/></svg></button>
+    </div>
+    <p class="hint" id="mh">اضغط زر السماعة لتسمع صوتك مباشرة أثناء التسجيل (استخدم سماعة سلكية)</p>
+  </div>
+  <div id="merr" hidden><span id="mmsg"></span><button class="btn" id="opn">فتح الصفحة في المتصفح مباشرة</button></div>
+  <div class="two">
+    <label class="btn">🎙 تسجيل بتطبيق الهاتف<input type="file" id="fc" accept="audio/*" capture hidden></label>
+    <button class="btn" id="fx1"><svg class="i"><use href="#i-fx"/></svg>التأثيرات</button>
+  </div>
+  <label class="chk"><input type="checkbox" id="ns" checked> عزل الضوضاء (يُطبّق عند فتح الميكروفون)</label>
+</section>
+
+<section class="tab" id="t-lib" hidden>
+  <div class="two">
+    <label class="btn gold"><svg class="i"><use href="#i-file"/></svg>فتح صوت / فيديو<input type="file" id="fi" accept="audio/*,video/*" hidden></label>
+    <label class="btn">🎙 تسجيل بتطبيق الهاتف<input type="file" id="fc2" accept="audio/*" capture hidden></label>
+  </div>
+  <div class="card"><h3>تسجيلاتي (محفوظة تلقائيًا)</h3><div id="list"><div class="empty">لا توجد تسجيلات بعد</div></div></div>
+</section>
+
+<section class="tab" id="t-ed" hidden>
+  <div class="empty" id="edE">افتح تسجيلاً من «المكتبة» أو افتح ملف صوت/فيديو للتعديل</div>
+  <div id="edB" hidden class="tab">
+    <div class="card">
+      <div class="hint" id="edn" style="direction:ltr;margin:0 0 8px"></div>
+      <canvas id="wv"></canvas>
+      <div class="tm"><span id="ts">00:00.0</span><span id="tl">00:00.0</span><span id="te">00:00.0</span></div>
+      <div class="recrow" style="margin:4px 0">
+        <button class="ib sm" id="lp" aria-label="تكرار"><svg class="i"><use href="#i-loop"/></svg></button>
+        <button class="pp" id="pp" aria-label="تشغيل"><svg class="i f" style="width:30px;height:30px"><use href="#i-play"/></svg></button>
+        <button class="ib sm" id="all" aria-label="تحديد الكل"><svg class="i"><use href="#i-all"/></svg></button>
+      </div>
+      <p class="hint">اسحب المقبضين الذهبيين لتحديد الجزء · المس الموجة لتحريك المؤشر</p>
+    </div>
+    <div class="tools">
+      <button class="tool hi" id="auto"><svg class="i"><use href="#i-magic"/></svg>تعديل تلقائي</button>
+      <button class="tool" id="crop"><svg class="i"><use href="#i-cut"/></svg>اقتصاص المحدد</button>
+      <button class="tool" id="del"><svg class="i"><use href="#i-trash"/></svg>حذف المحدد</button>
+      <button class="tool" id="undo"><svg class="i"><use href="#i-undo"/></svg>تراجع</button>
+      <button class="tool" id="join"><svg class="i"><use href="#i-plus"/></svg>ضم ملف بعده</button>
+      <button class="tool" id="mix"><svg class="i"><use href="#i-layers"/></svg>دمج فوقه</button>
+      <button class="tool" id="fx2"><svg class="i"><use href="#i-fx"/></svg>التأثيرات</button>
+      <input type="file" id="fa" accept="audio/*,video/*" hidden>
+    </div>
+    <div class="two">
+      <button class="btn gold" id="sv"><svg class="i"><use href="#i-save"/></svg>حفظ بالمكتبة</button>
+      <button class="btn" id="dl"><svg class="i"><use href="#i-dl"/></svg>تنزيل WAV</button>
+    </div>
+  </div>
+</section>
+</main>
+<nav>
+  <button id="n-rec" class="on"><svg class="i"><use href="#i-mic"/></svg>تسجيل</button>
+  <button id="n-lib"><svg class="i"><use href="#i-lib"/></svg>المكتبة</button>
+  <button id="n-ed"><svg class="i"><use href="#i-wave"/></svg>المحرر</button>
+</nav>
+</div>
+
+<div id="shade"></div>
+<div id="sheet"><div class="grab"></div>
+  <div class="pre" id="pre"></div><div id="fxg"></div>
+  <label class="chk"><input type="checkbox" id="nm" checked> تطبيع المستوى تلقائيًا عند الحفظ</label>
+  <button class="btn gold" id="fxd" style="width:100%;margin-top:6px">تم</button>
+</div>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const I=(n,c='')=>`<svg class="i ${c}"><use href="#i-${n}"/></svg>`;
+const S=[['g','مستوى الدخل',0,3,.05,1,'x'],['lo','باص',-12,12,.5,0,'dB'],['mi','وسط',-12,12,.5,0,'dB'],['hi','حدة',-12,12,.5,0,'dB'],['rv','صدى المكان',0,1,.01,.2,''],['rs','حجم المكان',.4,5,.1,1.5,'s'],['ec','تكرار Echo',0,1,.01,0,''],['et','زمن التكرار',.05,1,.01,.25,'s'],['cp','ضغط الديناميكا',0,1,.01,.3,''],['hp','قطع الترددات المنخفضة',20,300,5,80,'Hz'],['wm','دفء وتشبّع',0,1,.01,0,''],['ch','كورس',0,1,.01,0,''],['ms','مستوى الخرج',0,1.5,.05,1,'x']];
+const PR={'نقي':{rv:0,ec:0,lo:0,mi:0,hi:0,cp:.2},'استوديو':{rv:.15,rs:1,lo:2,mi:1,hi:3,cp:.5},'دافئ':{rv:.2,lo:5,mi:1,hi:-2,cp:.4},'مسجد':{rv:.5,rs:3,lo:2,hi:1,cp:.4},'قاعة كبرى':{rv:.65,rs:4.5,lo:1,hi:2,cp:.35},'حرم':{rv:.75,rs:5,ec:.2,et:.4,lo:2,hi:1,cp:.4},'صدى':{rv:.3,ec:.45,et:.3,cp:.3},'إذاعي':{lo:3,mi:2,hi:4,cp:.7,wm:.25,rv:.08},'خاشع':{rv:.6,rs:4,ch:.25,wm:.15,lo:3,hi:1,cp:.4}};
+const D={};S.forEach(s=>D[s[0]]=s[5]);
+$('fxg').innerHTML=S.map(s=>`<div class="sl"><label>${s[1]}<b id="v_${s[0]}"></b></label><input type="range" id="${s[0]}" min="${s[2]}" max="${s[3]}" step="${s[4]}" value="${s[5]}"></div>`).join('');
+$('pre').innerHTML=Object.keys(PR).map(k=>`<button class="btn" data-p="${k}">${k}</button>`).join('');
+const prm=()=>{const o={};S.forEach(s=>o[s[0]]=parseFloat($(s[0]).value));return o};
+const label=()=>S.forEach(s=>$('v_'+s[0]).textContent=$(s[0]).value+(s[6]?' '+s[6]:''));
+const upd=()=>{label();if(L)L.up(prm())};
+function setP(o){const p=Object.assign({},D,o);for(const k in p)$(k).value=p[k];upd()}
+let rt;S.forEach(s=>$(s[0]).oninput=()=>{label();document.querySelectorAll('#pre .btn').forEach(b=>b.classList.remove('sel'));if(s[0]=='rs'){clearTimeout(rt);rt=setTimeout(upd,250)}else upd()});
+$('pre').onclick=e=>{const k=e.target.dataset.p;if(!k)return;setP(PR[k]);document.querySelectorAll('#pre .btn').forEach(b=>b.classList.toggle('sel',b===e.target))};
+label();
+
+let rd=0,ctx,L,stream,msrc,mr,chunks=[],rec=false,paused=false,acc=0,seg=0,tk,monitor=false,mmode=0,db,mem=[],items={},ed=null,hist=[],ph=0,ps=null,p0=0,po=0,loop=false,addMode='',drag=null,tt;
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+(s%60).toFixed(1).padStart(4,'0');
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m,ms=2200){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),ms)}
+
+/* ---------- audio engine ---------- */
+function curve(a){const n=1024,c=new Float32Array(n),m=Math.tanh(1+a*4);for(let i=0;i<n;i++){const x=i*2/n-1;c[i]=Math.tanh(x*(1+a*4))/m}return c}
+function mkIR(c,sec){const r=c.sampleRate,l=Math.floor(r*sec),b=c.createBuffer(2,l,r),pd=Math.floor(r*.012);for(let k=0;k<2;k++){const d=b.getChannelData(k);let y=0;for(let i=pd;i<l;i++){const t=(i-pd)/(l-pd),a=.55*Math.exp(-3*t)+.06;y+=a*((Math.random()*2-1)-y);d[i]=y*Math.exp(-6.2*t)*Math.min(1,(i-pd)/(r*.004))}}return b}
+function chain(c){
+ const f=(t,fr)=>{const n=c.createBiquadFilter();n.type=t;n.frequency.value=fr;return n},g=()=>c.createGain(),off=!!c.startRendering;
+ const n={in:g(),hp:f('highpass',80),lo:f('lowshelf',200),mi:f('peaking',1500),hi:f('highshelf',5000),sh:c.createWaveShaper(),cp:c.createDynamicsCompressor(),dry:g(),cv:c.createConvolver(),rv:g(),dl:c.createDelay(1.5),fb:g(),ec:g(),cd:c.createDelay(.1),lf:c.createOscillator(),lg:g(),chg:g(),ms:g(),lim:c.createDynamicsCompressor()};
+ n.mi.Q.value=.9;n.sh.oversample='2x';n.cp.attack.value=.005;n.cp.release.value=.2;n.cp.knee.value=12;n.fb.gain.value=.35;n.cd.delayTime.value=.022;n.lf.frequency.value=.8;
+ n.lim.threshold.value=-2;n.lim.ratio.value=20;n.lim.attack.value=.001;n.lim.knee.value=0;n.lim.release.value=.1;
+ n.in.connect(n.hp).connect(n.lo).connect(n.mi).connect(n.hi).connect(n.sh).connect(n.cp);
+ n.cp.connect(n.dry).connect(n.ms);n.cp.connect(n.cv).connect(n.rv).connect(n.ms);
+ n.cp.connect(n.dl);n.dl.connect(n.fb).connect(n.dl);n.dl.connect(n.ec).connect(n.ms);
+ n.lf.connect(n.lg).connect(n.cd.delayTime);n.lf.start();n.cp.connect(n.cd).connect(n.chg).connect(n.ms);n.ms.connect(n.lim);
+ n.out=n.lim;n.sh=n.sh;
+ n.up=p=>{const t=c.currentTime,s=(a,v)=>off?a.value=v:a.setTargetAtTime(v,t,.02);
+  s(n.in.gain,p.g);s(n.hp.frequency,p.hp);s(n.lo.gain,p.lo);s(n.mi.gain,p.mi);s(n.hi.gain,p.hi);n.sh.curve=p.wm?curve(p.wm):null;
+  n.cp.threshold.value=-8-p.cp*42;n.cp.ratio.value=2+p.cp*10;s(n.rv.gain,p.rv);s(n.dl.delayTime,p.et);s(n.ec.gain,p.ec);s(n.chg.gain,p.ch*.7);s(n.lg.gain,.002+p.ch*.004);s(n.ms.gain,p.ms);
+  if(n.rs!==p.rs){n.rs=p.rs;n.cv.buffer=mkIR(c,p.rs)}};
+ return n}
+function ensureCtx(){if(ctx)return;ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:0});L=chain(ctx);L.sh.oversample='none';L.dir=ctx.createGain();L.dir.gain.value=0;L.dir.connect(ctx.destination);L.mon=ctx.createGain();L.mon.gain.value=0;L.rd=ctx.createMediaStreamDestination();L.an=ctx.createAnalyser();L.an.fftSize=256;L.an.smoothingTimeConstant=.8;
+ L.out.connect(L.an);L.out.connect(L.rd);L.out.connect(L.mon);L.mon.connect(ctx.destination);upd();viz()}
+function viz(){const cv=$('viz'),g=cv.getContext('2d'),a=new Uint8Array(L.an.frequencyBinCount);(function f(){requestAnimationFrame(f);if(!cv.clientWidth)return;const d=devicePixelRatio||1,w=Math.round(cv.clientWidth*d);if(cv.width!==w){cv.width=w;cv.height=Math.round(cv.clientHeight*d)}
+ L.an.getByteFrequencyData(a);g.clearRect(0,0,cv.width,cv.height);const n=44,bw=cv.width/n;g.fillStyle='#d4af6a';for(let i=0;i<n;i++){const v=a[Math.floor(i*a.length*.7/n)]/255,h=Math.max(4*d,v*cv.height);g.globalAlpha=.35+v*.65;g.fillRect(i*bw+2,(cv.height-h)/2,bw-4,h)}g.globalAlpha=1})()}
+
+/* ---------- microphone (opened only on a tap) ---------- */
+const MSG={NotAllowedError:'المتصفح رفض الميكروفون لهذه الصفحة.',NoMediaDevices:'المتصفح مش مدّي الصفحة صلاحية الميكروفون.',NotFoundError:'مفيش ميكروفون متوصّل بالجهاز.',NotReadableError:'الميكروفون مستخدم في تطبيق تاني، اقفله وجرب تاني.',SecurityError:'المتصفح منع الميكروفون لأسباب أمان.'};
+async function openMic(){if(stream&&stream.active)return;ensureCtx();await ctx.resume();
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw{name:'NoMediaDevices'};
+ try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:$('ns').checked,autoGainControl:false}})}catch(e){if(e.name=='NotAllowedError'||e.name=='NotFoundError')throw e;stream=await navigator.mediaDevices.getUserMedia({audio:true})}
+ if(msrc)msrc.disconnect();msrc=ctx.createMediaStreamSource(stream);msrc.connect(L.in);msrc.connect(L.dir);try{navigator.wakeLock.request('screen')}catch(e){}}
+function showErr(e){const n=e&&e.name||'error';let t=(MSG[n]||'تعذر تشغيل الميكروفون')+' ['+n+']';
+ if(window.top!==window.self)t+='\nالصفحة مفتوحة داخل إطار/معاينة، والمتصفح بيمنع الميكروفون جوه الإطارات.';
+ if(!window.isSecureContext)t+='\nالصفحة مش على https (أو مفتوحة كملف)، والميكروفون بيشتغل على https فقط.';
+ t+='\nالحل: ارفع الملف على استضافة https (Netlify / GitHub Pages) وافتحه في Chrome مباشرة. وفي الوقت ده تقدر تسجّل بتطبيق الهاتف بالزر تحت.';
+ $('mmsg').textContent=t;$('merr').hidden=false;$('opn').hidden=!/^https?:/.test(location.protocol)}
+$('opn').onclick=()=>window.open(location.href,'_blank');
+const el=()=>(acc+(paused?0:performance.now()-seg))/1000;
+function setRec(on){$('rb').innerHTML=I(on?'stop':'mic','f');$('rb').classList.toggle('stop',on);$('live').textContent=on?'● يسجل':'جاهز';$('live').classList.toggle('on',on)}
+$('rb').onclick=async()=>{
+ if(rec){rd=el();mr.stop();rec=false;paused=false;clearInterval(tk);setRec(false);$('pz').innerHTML=I('pause','f');return}
+ try{await openMic()}catch(e){showErr(e);return}
+ $('merr').hidden=true;chunks=[];const mt=['audio/webm;codecs=opus','audio/mp4','audio/webm'].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t));
+ try{mr=new MediaRecorder(L.rd.stream,mt?{mimeType:mt,audioBitsPerSecond:192000}:{})}catch(e){showErr(e);return}
+ mr.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+ mr.onstop=async()=>{const ty=mr.mimeType||'audio/webm';await dbPut({blob:new Blob(chunks,{type:ty}),date:Date.now(),dur:rd,ext:ty.includes('mp4')?'m4a':'webm',name:'تسجيل'});await renderLib();toast('تم الحفظ في المكتبة ✓')};
+ if(mmode==0)setMon(1);mr.start(1000);rec=true;paused=false;acc=0;seg=performance.now();tk=setInterval(()=>$('tm').textContent=fmt(el()),100);setRec(true)};
+$('pz').onclick=()=>{if(!rec)return;const now=performance.now();if(!paused){mr.pause();acc+=now-seg;paused=true;$('pz').innerHTML=I('play','f');$('live').textContent='⏸ متوقف'}else{mr.resume();seg=now;paused=false;$('pz').innerHTML=I('pause','f');$('live').textContent='● يسجل'}};
+function setMon(m){mmode=m;monitor=m==1;const t=ctx.currentTime;L.mon.gain.setTargetAtTime(monitor?1:0,t,.01);L.dir.gain.setTargetAtTime(m==2?1:0,t,.01);$('mon').classList.toggle('on',m>0);
+ const x=['المراقبة متوقفة','🎧 تسمع صوتك مباشرة بنفس التأثيرات اللي ظابطها','🎧 صوتك الطبيعي بدون تأثيرات (أقل تأخير)'][m];$('mh').textContent=x;toast(x,2600)}
+$('mon').onclick=async()=>{try{await openMic()}catch(e){showErr(e);return}setMon((mmode+1)%3)};
+
+/* ---------- storage ---------- */
+function dbOpen(){return new Promise(r=>{try{const q=indexedDB.open('qstudio',1);q.onupgradeneeded=()=>q.result.createObjectStore('r',{keyPath:'id',autoIncrement:true});q.onsuccess=()=>{db=q.result;r()};q.onerror=()=>r()}catch(e){r()}})}
+function dbPut(o){return new Promise(r=>{if(!db){mem.push(Object.assign(o,{id:Date.now()}));return r()}try{const t=db.transaction('r','readwrite');t.objectStore('r').add(o);t.oncomplete=r;t.onerror=r}catch(e){mem.push(Object.assign(o,{id:Date.now()}));r()}})}
+function dbAll(){return new Promise(r=>{if(!db)return r(mem.slice());try{const q=db.transaction('r').objectStore('r').getAll();q.onsuccess=()=>r(q.result.concat(mem));q.onerror=()=>r(mem.slice())}catch(e){r(mem.slice())}})}
+function dbDel(id){return new Promise(r=>{const i=mem.findIndex(m=>m.id==id);if(i>-1)mem.splice(i,1);if(!db)return r();try{const t=db.transaction('r','readwrite');t.objectStore('r').delete(id);t.oncomplete=r}catch(e){r()}})}
+async function renderLib(){const a=(await dbAll()).sort((x,y)=>y.date-x.date);items={};a.forEach(x=>items[x.id]=x);
+ $('list').innerHTML=a.length?a.map(x=>`<div class="row" data-id="${x.id}"><div class="ri">${I('wave')}</div><div class="rm"><b>${esc(x.name||'تسجيل')}</b><small>${new Date(x.date).toLocaleString('ar-EG')} · ${fmt(x.dur||0)}</small></div><button class="ib sm" data-a="ed">${I('cut')}</button><button class="ib sm" data-a="dl">${I('dl')}</button><button class="ib sm red" data-a="rm">${I('trash')}</button></div>`).join(''):'<div class="empty">لا توجد تسجيلات بعد</div>'}
+function saveBlob(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+$('list').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return;const id=b.closest('.row').dataset.id,it=items[id];if(!it)return;
+ if(b.dataset.a=='rm'){await dbDel(it.id);renderLib()}
+ else if(b.dataset.a=='dl')saveBlob(it.blob,(it.name||'Quran').replace(/[\\/:*?"<>|]/g,'')+'-'+it.date+'.'+it.ext);
+ else{try{ensureCtx();toast('جاري التحميل…',8000);const buf=await ctx.decodeAudioData(await it.blob.arrayBuffer());setEd(buf,(it.name||'تسجيل'));toast('جاهز للتعديل')}catch(x){toast('تعذر قراءة التسجيل')}}};
+
+/* ---------- editor ---------- */
+function go(n){['rec','lib','ed'].forEach(k=>{$('t-'+k).hidden=k!=n;$('n-'+k).classList.toggle('on',k==n)});if(n=='ed')setTimeout(dw,0);document.querySelector('main').scrollTop=0}
+['rec','lib','ed'].forEach(k=>$('n-'+k).onclick=()=>go(k));
+function setEd(buf,name){stopP();ed={buf,name,s:0,e:buf.duration,pk:null};hist=[];ph=0;$('edE').hidden=true;$('edB').hidden=false;$('edn').textContent=name+' · '+fmt(buf.duration);go('ed')}
+async function openFile(f,asNew){if(!f)return;try{ensureCtx();await ctx.resume();toast('جاري تحميل الملف…',20000);const buf=await ctx.decodeAudioData(await f.arrayBuffer());asNew(buf);toast('تم ✓')}catch(x){toast('تعذر قراءة الملف (جرّب صيغة تانية)',3500)}}
+['fi','fc','fc2'].forEach(id=>$(id).onchange=e=>{const f=e.target.files[0];e.target.value='';openFile(f,b=>setEd(b,f.name))});
+function pk(){const W=$('wv').width,d=ed.buf.getChannelData(0),n=d.length,st=n/W,p=new Float32Array(W);for(let x=0;x<W;x++){let m=0;const a=Math.floor(x*st),b=Math.max(a+1,Math.min(n,Math.floor((x+1)*st))),step=Math.max(1,Math.floor((b-a)/40));for(let i=a;i<b;i+=step){const v=Math.abs(d[i]);if(v>m)m=v}p[x]=m}ed.pk=p}
+function dw(){if(!ed||$('t-ed').hidden)return;const cv=$('wv'),d=devicePixelRatio||1,w=cv.clientWidth;if(!w)return;if(cv.width!==Math.round(w*d)){cv.width=Math.round(w*d);cv.height=Math.round(cv.clientHeight*d);ed.pk=null}if(!ed.pk)pk();
+ const g=cv.getContext('2d'),W=cv.width,H=cv.height,du=ed.buf.duration,xs=ed.s/du*W,xe=ed.e/du*W;g.clearRect(0,0,W,H);
+ for(let x=0;x<W;x++){const h=ed.pk[x]*H*.46;g.fillStyle=x>=xs&&x<=xe?'#d4af6a':'#434c60';g.fillRect(x,H/2-h-1,1,2*h+2)}
+ g.fillStyle='#f3dca0';g.fillRect(xs-1.5*d,0,3*d,H);g.fillRect(xe-1.5*d,0,3*d,H);
+ g.beginPath();g.arc(xs,12*d,10*d,0,7);g.fill();g.beginPath();g.arc(xe,H-12*d,10*d,0,7);g.fill();
+ const xp=ph/du*W;g.fillStyle='#fff';g.fillRect(xp-d,0,2*d,H);
+ $('ts').textContent=fmt(ed.s);$('tl').textContent='المحدد '+fmt(ed.e-ed.s);$('te').textContent=fmt(ed.e)}
+function mv(e){const r=$('wv').getBoundingClientRect(),du=ed.buf.duration,t=Math.max(0,Math.min(du,(e.clientX-r.left)/r.width*du));
+ if(drag=='s'){ed.s=Math.min(t,ed.e-.05);if(ph<ed.s)ph=ed.s}else if(drag=='e'){ed.e=Math.max(t,ed.s+.05);if(ph>ed.e)ph=ed.s}else ph=t;dw()}
+$('wv').onpointerdown=e=>{if(!ed)return;e.target.setPointerCapture(e.pointerId);const r=e.target.getBoundingClientRect(),x=e.clientX-r.left,du=ed.buf.duration,ds=Math.abs(x-ed.s/du*r.width),de=Math.abs(x-ed.e/du*r.width);drag=Math.min(ds,de)<30?(ds<=de?'s':'e'):'p';mv(e)};
+$('wv').onpointermove=e=>{if(drag)mv(e)};
+$('wv').onpointerup=$('wv').onpointercancel=()=>{const was=drag;drag=null;if(ps&&was)play()};
+window.addEventListener('resize',()=>{if(ed)ed.pk=null;dw()});
+function setPP(on){$('pp').innerHTML=I(on?'pause':'play','f').replace('class="i f"','class="i f" style="width:30px;height:30px"')}
+function stopP(){if(ps){ps.onended=null;try{ps.stop()}catch(e){}ps.disconnect();ps=null}if(L)L.mon.gain.setTargetAtTime(monitor?1:0,ctx.currentTime,.01);setPP(false)}
+function play(){if(!ed)return;ensureCtx();ctx.resume();const keep=ph;stopP();ph=keep;if(ph<ed.s||ph>=ed.e-.02)ph=ed.s;const s=ctx.createBufferSource();s.buffer=ed.buf;s.connect(L.in);
+ if(loop){s.loop=true;s.loopStart=ed.s;s.loopEnd=ed.e;s.start(0,ph)}else s.start(0,ph,ed.e-ph);
+ s.onended=()=>{if(ps===s){ps=null;ph=ed.s;L.mon.gain.setTargetAtTime(monitor?1:0,ctx.currentTime,.01);setPP(false);dw()}};ps=s;p0=ctx.currentTime;po=ph;L.mon.gain.setTargetAtTime(1,ctx.currentTime,.01);setPP(true)}
+$('pp').onclick=()=>{if(!ed)return;if(ps){ph=Math.min(ed.e,po+ctx.currentTime-p0);stopP();dw()}else play()};
+$('lp').onclick=()=>{loop=!loop;$('lp').classList.toggle('on',loop);if(ps)play()};
+$('all').onclick=()=>{if(!ed)return;ed.s=0;ed.e=ed.buf.duration;dw()};
+(function f(){requestAnimationFrame(f);if(!ps||!ed)return;let t=po+ctx.currentTime-p0;if(loop&&t>=ed.e)t=ed.s+((t-ed.s)%(ed.e-ed.s));ph=Math.min(t,ed.e);dw()})();
+function push(){hist.push({b:ed.buf,s:ed.s,e:ed.e});if(hist.length>15)hist.shift()}
+function apply(buf){stopP();ed.buf=buf;ed.s=0;ed.e=buf.duration;ed.pk=null;ph=0;$('edn').textContent=ed.name+' · '+fmt(buf.duration);dw()}
+function slice(b,a,z){const o=ctx.createBuffer(b.numberOfChannels,z-a,b.sampleRate);for(let c=0;c<b.numberOfChannels;c++)o.getChannelData(c).set(b.getChannelData(c).subarray(a,z));return o}
+$('crop').onclick=()=>{if(!ed)return;const b=ed.buf,sr=b.sampleRate,a=Math.floor(ed.s*sr),z=Math.floor(ed.e*sr);if(z-a<sr*.05)return toast('حدد جزء أطول');if(a==0&&z>=b.length)return toast('حدد الجزء اللي عايز تحتفظ بيه الأول');push();apply(slice(b,a,z));toast('تم الاقتصاص ✂')};
+$('del').onclick=()=>{if(!ed)return;const b=ed.buf,sr=b.sampleRate,a=Math.floor(ed.s*sr),z=Math.floor(ed.e*sr),n=b.length-(z-a);if(n<sr*.05)return toast('مينفعش تحذف كل الصوت');push();const o=ctx.createBuffer(b.numberOfChannels,n,sr);for(let c=0;c<b.numberOfChannels;c++){const s=b.getChannelData(c),t=o.getChannelData(c);t.set(s.subarray(0,a),0);t.set(s.subarray(z),a)}apply(o);toast('تم حذف الجزء المحدد')};
+$('undo').onclick=()=>{if(!ed||!hist.length)return toast('مفيش حاجة للتراجع');const h=hist.pop();apply(h.b);ed.s=h.s;ed.e=h.e;dw();toast('تم التراجع')};
+['join','mix'].forEach(k=>$(k).onclick=()=>{if(!ed)return;addMode=k;$('fa').click()});
+$('fa').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!ed||!f)return;openFile(f,b=>{push();const a=ed.buf,sr=a.sampleRate,mixing=addMode=='mix',off=mixing?Math.floor(ed.s*sr):a.length,n=Math.max(a.length,off+b.length),o=ctx.createBuffer(2,n,sr);
+ for(let c=0;c<2;c++){const t=o.getChannelData(c);t.set(a.getChannelData(Math.min(c,a.numberOfChannels-1)),0);const s=b.getChannelData(Math.min(c,b.numberOfChannels-1));if(mixing)for(let i=0;i<s.length;i++)t[off+i]+=s[i];else t.set(s,off)}
+ apply(o);toast(mixing?'تم الدمج فوق الصوت ✓':'تم الضم بعد الصوت ✓')})};
+function denoise(b){const sr=b.sampleRate,w=Math.floor(sr*.02),nw=Math.floor(b.length/w);if(nw<10)return b;const d0=b.getChannelData(0),r=new Float32Array(nw);
+ for(let k=0;k<nw;k++){let q=0;for(let i=k*w;i<(k+1)*w;i++)q+=d0[i]*d0[i];r[k]=Math.sqrt(q/w)}
+ const so=Array.from(r).sort((a,b)=>a-b),fl=so[Math.floor(nw*.12)]||0,th=Math.min(Math.max(fl*2.5,.002),so[Math.floor(nw*.5)]*.6),tg=new Float32Array(nw);let hold=0;
+ for(let k=0;k<nw;k++){if(r[k]>th)hold=12;else if(hold>0)hold--;tg[k]=hold>0?1:.15}
+ const o=ctx.createBuffer(b.numberOfChannels,b.length,sr);
+ for(let c=0;c<b.numberOfChannels;c++){const s=b.getChannelData(c),t=o.getChannelData(c);let g=1;for(let i=0;i<b.length;i++){const v=tg[Math.min(nw-1,(i/w)|0)];g+=(v-g)*(v>g?.01:.0003);t[i]=s[i]*g}}return o}
+$('auto').onclick=()=>{if(!ed)return;toast('جاري التحسين التلقائي…',9000);setTimeout(()=>{try{push();const o=denoise(ed.buf);apply(o);setP({hp:90,lo:1,mi:1.5,hi:2.5,cp:.45,rv:.1,rs:1,wm:.05});$('nm').checked=true;toast('تم التحسين: تنقية + EQ + ضغط + رفع المستوى ✨',3200)}catch(x){toast('تعذر التحسين')}},50)};
+async function renderFx(){const b=ed.buf,p=prm(),sr=b.sampleRate,tail=Math.ceil(sr*((p.rv>.02?p.rs:0)+(p.ec>.02?p.et*6:0)+.1)),c=new OfflineAudioContext(2,b.length+tail,sr),ch=chain(c);ch.up(p);
+ const s=c.createBufferSource();s.buffer=b;s.connect(ch.in);ch.out.connect(c.destination);s.start();const o=await c.startRendering();
+ if($('nm').checked){let m=0;for(let k=0;k<o.numberOfChannels;k++){const d=o.getChannelData(k);for(let i=0;i<d.length;i++){const v=Math.abs(d[i]);if(v>m)m=v}}if(m>0){const g=.89/m;for(let k=0;k<o.numberOfChannels;k++){const d=o.getChannelData(k);for(let i=0;i<d.length;i++)d[i]*=g}}}return o}
+function encWav(b){const n=b.length,c=b.numberOfChannels,v=new DataView(new ArrayBuffer(44+n*c*2)),w=(p,s)=>{for(let i=0;i<s.length;i++)v.setUint8(p+i,s.charCodeAt(i))};
+ w(0,'RIFF');v.setUint32(4,36+n*c*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,c,true);v.setUint32(24,b.sampleRate,true);v.setUint32(28,b.sampleRate*c*2,true);v.setUint16(32,c*2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*c*2,true);
+ const d=[];for(let k=0;k<c;k++)d.push(b.getChannelData(k));let p=44;for(let i=0;i<n;i++)for(let k=0;k<c;k++){const s=Math.max(-1,Math.min(1,d[k][i]));v.setInt16(p,s<0?s*32768:s*32767,true);p+=2}return new Blob([v],{type:'audio/wav'})}
+async function out(dl){if(!ed)return;stopP();toast('جاري المعالجة…',60000);try{const o=await renderFx(),b=encWav(o),nm=ed.name.replace(/\.[^.]+$/,'')+'-edit';
+ if(dl)saveBlob(b,nm+'.wav');else{await dbPut({blob:b,date:Date.now(),dur:o.duration,ext:'wav',name:nm});await renderLib()}toast(dl?'تم التنزيل ✓':'تم الحفظ في المكتبة ✓')}catch(x){toast('تعذر الحفظ')}}
+$('sv').onclick=()=>out(false);$('dl').onclick=()=>out(true);
+
+/* ---------- effects sheet ---------- */
+const sheet=o=>{document.body.classList.toggle('fxo',o);if(o){ensureCtx();upd()}};
+['fx1','fx2'].forEach(k=>$(k).onclick=()=>sheet(true));$('shade').onclick=$('fxd').onclick=()=>sheet(false);
+
+/* ---------- start ---------- */
+$('go').onclick=async()=>{await dbOpen();await renderLib();$('splash').classList.add('hide');setTimeout(()=>$('splash').style.display='none',700)};
+</script>
+</body>
+</html>
